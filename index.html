@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sajan Sainju — Projects</title>
-<meta name="description" content="Selected full-stack projects: VisualVocab, lendocli, deployment tracker.">
+<meta name="description" content="Selected full-stack projects: VisualVocab, ourcli, deployment tracker.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -125,6 +125,104 @@
   }
   .cap { font-size: clamp(10px, 1vw, 13px); color: var(--muted); margin-top: 1vh; }
 
+  /* ---------- diagrams ---------- */
+  .diagram { display: grid; gap: 1.5vh; margin-top: .5vh; }
+
+  .lane {
+    display: grid;
+    grid-template-columns: 15ch 1fr;
+    gap: 1vw;
+    align-items: center;
+  }
+  .lane-label {
+    text-align: right;
+    font-size: clamp(11px, 1.12vw, 16px);
+    font-weight: 500;
+    color: var(--fg);
+    line-height: 1.3;
+  }
+  .lane-label em {
+    display: block;
+    font-style: normal;
+    font-weight: 400;
+    font-size: .84em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .chain { display: flex; align-items: stretch; gap: .45vw; }
+  .node {
+    flex: 1 1 0;
+    min-width: 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.1vh .7vw;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .node b {
+    font-weight: 500;
+    font-size: clamp(10px, 1.02vw, 15px);
+    line-height: 1.25;
+  }
+  .node i {
+    font-style: normal;
+    color: var(--muted);
+    font-size: clamp(9px, .88vw, 12.5px);
+    line-height: 1.3;
+    margin-top: 2px;
+  }
+  .node.hi { border-color: var(--accent); }
+  .node.hi b { color: var(--accent); }
+  .node.soft { background: var(--soft); }
+  .node.wide { flex: 1.6 1 0; }
+  .node.narrow { flex: .72 1 0; }
+
+  .arrow {
+    align-self: center;
+    flex: 0 0 auto;
+    color: #9aa0a6;
+    font-size: clamp(11px, 1.1vw, 16px);
+  }
+
+  .legend {
+    display: flex;
+    gap: 1.4vw;
+    flex-wrap: wrap;
+    margin-top: 2vh;
+    font-size: clamp(10px, 1.05vw, 15px);
+    color: var(--muted);
+  }
+  .legend b { color: var(--fg); font-weight: 500; }
+
+  pre {
+    margin: 0;
+    background: #f8f9fa;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1.8vh 1.1vw;
+    font-family: var(--mono);
+    font-size: clamp(8px, .88vw, 13px);
+    line-height: 1.75;
+    color: #3c4043;
+    overflow: hidden;
+    white-space: pre;
+  }
+  pre .c { color: #9aa0a6; }
+  pre .p { color: #9aa0a6; }
+  pre .k { color: #188038; }
+  pre .e { color: #d93025; }
+  pre .b { color: #202124; font-weight: 500; }
+
+  .label {
+    font-size: clamp(11px, 1.1vw, 15px);
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 1vh;
+  }
+
   .tag {
     display: inline-block;
     font-size: clamp(10px, 1vw, 13px);
@@ -186,27 +284,29 @@
   <!-- 2 -->
   <section class="slide" data-title="Overview">
     <h2>Overview</h2>
-    <p class="sub">Three projects, different scales.</p>
+    <p class="sub">Four projects, different scales.</p>
     <table>
       <tr>
-        <th>Project</th><th>What it is</th><th>Role</th><th>Stack</th>
+        <th>Project</th><th>What it is</th><th>Stack</th>
       </tr>
       <tr>
         <td class="k">VisualVocab</td>
         <td>iOS app — point your camera at an object, learn its name in 11 languages</td>
-        <td>Solo, end to end</td>
         <td>React Native, TypeScript, Swift, Supabase, Nuxt</td>
       </tr>
       <tr>
-        <td class="k">lendocli</td>
-        <td>CLI for AWS, GitHub Enterprise and deploys</td>
-        <td>Contributor (team tool)</td>
+        <td class="k">ChildTales</td>
+        <td>Web app that generates illustrated children's stories, starring a character you train on your own photos</td>
+        <td>Nuxt 3, NestJS, PostgreSQL, Redis, OpenAI, Replicate, Docker</td>
+      </tr>
+      <tr>
+        <td class="k">ourcli</td>
+        <td>CLI for AWS, GitHub and deploys</td>
         <td>Go, AWS SDK, GoReleaser</td>
       </tr>
       <tr>
         <td class="k">Deployment tracker</td>
         <td>Board showing who holds each shared frontend environment</td>
-        <td>Solo, internal</td>
         <td>GitHub API, GitHub Pages, OAuth</td>
       </tr>
     </table>
@@ -245,38 +345,48 @@
   <section class="slide" data-title="VisualVocab">
     <h2>VisualVocab — how it works</h2>
     <p class="sub">Three ways to identify an object, each a different trade-off.</p>
-    <div class="cols3">
-      <div>
-        <h3>On-device (default)</h3>
-        <ul class="tight">
-          <li>YOLOv26n running in TensorFlow Lite, 3.25 MB</li>
-          <li>15–24 fps, 20–40 ms per frame</li>
-          <li>Free, works offline, 80 object classes</li>
-        </ul>
+    <div class="diagram">
+      <div class="lane">
+        <div class="lane-label">On-device<em>free · offline</em></div>
+        <div class="chain">
+          <div class="node hi"><b>Camera frame</b><i>30 fps</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Worklet thread</b><i>off the UI thread</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>TFLite · YOLO</b><i>3.25 MB, 80 classes</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Skia overlay</b><i>boxes at 60 fps</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Local lookup</b><i>11 languages</i></div>
+        </div>
       </div>
-      <div>
-        <h3>Cloud</h3>
-        <ul class="tight">
-          <li>Claude Haiku vision model via a Supabase edge function</li>
-          <li>Recognises anything, not just 80 classes</li>
-          <li>1–3 s, costs credits</li>
-        </ul>
+      <div class="lane">
+        <div class="lane-label">Cloud<em>1–3 s · costs credits</em></div>
+        <div class="chain">
+          <div class="node"><b>Tap or draw</b><i>crop the region</i></div><span class="arrow">→</span>
+          <div class="node"><b>Edge function</b><i>Supabase, Deno</i></div><span class="arrow">→</span>
+          <div class="node"><b>Claude vision</b><i>any object, not just 80</i></div><span class="arrow">→</span>
+          <div class="node"><b>Postgres</b><i>atomic credit debit</i></div><span class="arrow">→</span>
+          <div class="node"><b>Result</b><i>label + confidence</i></div>
+        </div>
       </div>
-      <div>
-        <h3>Apple Intelligence</h3>
-        <ul class="tight">
-          <li>Apple Vision + on-device Foundation Models</li>
-          <li>Custom Swift / Objective-C bridge</li>
-          <li>Free and fully private, iOS 26+</li>
-        </ul>
+      <div class="lane">
+        <div class="lane-label">Apple AI<em>1–2 s · free · iOS 26+</em></div>
+        <div class="chain">
+          <div class="node"><b>Tap or draw</b><i>crop the region</i></div><span class="arrow">→</span>
+          <div class="node"><b>Swift bridge</b><i>custom native module</i></div><span class="arrow">→</span>
+          <div class="node"><b>Apple Vision</b><i>top-5 candidates</i></div><span class="arrow">→</span>
+          <div class="node"><b>Foundation Models</b><i>on-device LLM picks one</i></div><span class="arrow">→</span>
+          <div class="node"><b>Result</b><i>never leaves the phone</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">Then<em>every path</em></div>
+        <div class="chain">
+          <div class="node soft"><b>Saved to your vocabulary</b><i>deduplicated, counted, synced to Postgres with row-level security — or kept on-device in guest mode</i></div>
+        </div>
       </div>
     </div>
-    <h3 style="margin-top:2.5vh">Notable engineering</h3>
-    <ul class="tight">
-      <li>Inference runs on a worklet thread and boxes render on a Skia canvas, so the UI holds 60 fps</li>
-      <li>Credits are debited by a single locking Postgres stored procedure — no double-spending</li>
-      <li>Row Level Security on every table; IAP receipts verified server-side and deduplicated</li>
-    </ul>
+    <div class="legend">
+      <span><b>Default path is free.</b> Pushing inference on-device is what makes that sustainable.</span>
+      <span><b>The user picks the trade-off</b> — speed, cost, privacy — rather than the app guessing.</span>
+    </div>
   </section>
 
   <!-- 5 -->
@@ -311,40 +421,213 @@
   </section>
 
   <!-- 6 -->
-  <section class="slide" data-title="lendocli">
-    <h2>lendocli</h2>
-    <p class="sub">Go CLI for AWS, GitHub Enterprise and deploys. A team tool — a colleague built the core.</p>
-    <div class="cols lean">
+  <section class="slide" data-title="ChildTales">
+    <h2>ChildTales</h2>
+    <p class="sub">Illustrated children's stories, generated around a character the child chooses — or becomes.</p>
+    <div class="cols lean-r">
       <div>
-        <h3>What the tool does</h3>
-        <ul class="tight">
-          <li>One command for the whole Okta → AWS SSO login flow</li>
-          <li>Database and cache tunnels on stable local ports, restored after a session expires</li>
-          <li>Repos, open PRs and running workflows across a GitHub org</li>
-          <li>Deploy tags, rollback and release</li>
+        <ul>
+          <li>Pick an age group, a character, a set of interests and a theme — get a full illustrated
+            storybook back</li>
+          <li>Stories are written for the age band, so a toddler and a preteen get different
+            vocabulary and plot complexity</li>
+          <li>14 teaching themes to choose from: kindness, perseverance, overcoming fears, honesty</li>
+          <li>Finished stories read as a page-turning flip book, saved to a library and shareable
+            to a community feed</li>
+          <li>Google sign-in; stories are kept per account</li>
         </ul>
-        <h3 style="margin-top:2.5vh">My contribution — 4 commits, ~1.1k lines of Go</h3>
-        <ul class="tight">
-          <li><strong>PR and CI columns on image tags.</strong> Rollback meant picking between opaque
-            tags. I resolved each tag back to the pull request and CI run that produced it, so you
-            choose a change rather than a hash.</li>
-          <li><strong>Per-account SSO role discovery.</strong> The tool assumed everyone had admin in
-            every account and failed for anyone with scoped permissions. Replaced the assumption with
-            real discovery.</li>
-        </ul>
+        <div style="margin-top:1vh">
+          <span class="tag">Nuxt 3 + Tailwind</span><span class="tag">NestJS</span>
+          <span class="tag">TypeORM + PostgreSQL</span><span class="tag">Redis + Bull</span>
+          <span class="tag">OpenAI</span><span class="tag">Replicate</span>
+          <span class="tag">Docker</span>
+        </div>
       </div>
-      <div>
-        <h3>Why it mattered</h3>
-        <p class="muted" style="font-size:clamp(13px,1.35vw,19px)">Connecting to a dev database used to
-          take six manual steps across the AWS console, the CLI and two wiki pages — and usually failed
-          the first time on the wrong account.</p>
-        <div class="note">Go was new to me. Working inside someone else's codebase, matching their
-          conventions, is a different skill from building solo.</div>
+      <div style="display:flex; gap:1.2vw; align-items:flex-start">
+        <div style="flex:1; min-width:0">
+          <div class="frame"><img src="assets/ct-options.png" alt="Story personalisation screen"></div>
+          <div class="cap">Choose age, character, interests, theme</div>
+        </div>
+        <div style="flex:1; min-width:0">
+          <div class="frame"><img src="assets/ct-storybook.png" alt="Generated storybook"></div>
+          <div class="cap">Read it back as a flip book</div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- 7 -->
+  <section class="slide" data-title="ChildTales">
+    <h2>ChildTales — how it works</h2>
+    <p class="sub">A long-running AI pipeline, and a character that stays the same across every page.</p>
+    <div class="diagram">
+      <div class="lane">
+        <div class="lane-label">Request<em>returns immediately</em></div>
+        <div class="chain">
+          <div class="node"><b>Nuxt form</b><i>age, character, theme</i></div><span class="arrow">→</span>
+          <div class="node"><b>NestJS API</b><i>validates, persists</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Redis · Bull queue</b><i>job accepted, 3 retries with backoff</i></div><span class="arrow">→</span>
+          <div class="node"><b>UI polls status</b><i>real progress %, survives a refresh</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">Worker<em>runs for minutes</em></div>
+        <div class="chain">
+          <div class="node"><b>OpenAI</b><i>title + scenes</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Zod schema</b><i>malformed output fails here, not in the DB</i></div><span class="arrow">→</span>
+          <div class="node"><b>Image per scene</b><i>one prompt per page</i></div><span class="arrow">→</span>
+          <div class="node"><b>S3</b><i>illustrations stored</i></div><span class="arrow">→</span>
+          <div class="node"><b>Postgres</b><i>story + scenes saved</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">Character<em>once, ~20 min</em></div>
+        <div class="chain">
+          <div class="node"><b>10–20 photos</b><i>uploaded in the studio</i></div><span class="arrow">→</span>
+          <div class="node"><b>Zipped to S3</b><i>training set</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Flux LoRA fine-tune</b><i>Replicate, webhook status</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Private model</b><i>own trigger word</i></div><span class="arrow">→</span>
+          <div class="node soft"><b>↑ Used by the worker</b><i>every illustration goes through it, so the face stays the same</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><b>Why a queue:</b> generation takes minutes — a dropped connection shouldn't lose the work.</span>
+      <span><b>Why fine-tuning:</b> a generic image model redraws the face every time, which ruins a picture book.</span>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide" data-title="ourcli">
+    <h2>ourcli</h2>
+    <p class="sub">Internal Go CLI that puts everyday infrastructure work behind one command.</p>
+    <div class="cols">
+      <div>
+        <h3>The problem</h3>
+        <ul class="tight">
+          <li>One task meant four tools — the AWS console, the AWS CLI, GitHub and the GitOps repo,
+            each with its own login</li>
+          <li>Account IDs, bastion hosts and port conventions lived in wiki pages and people's heads</li>
+          <li>Opening a tunnel to a dev database took six manual steps, and usually failed the first
+            time on the wrong account</li>
+          <li>Rollbacks — the thing you most need to get right — were done by hand, from memory,
+            under pressure</li>
+        </ul>
+      </div>
+      <div>
+        <h3>How it solves it</h3>
+        <ul class="tight">
+          <li><strong>One login.</strong> The whole SSO flow in a single command, and tunnels come back
+            on the same local ports after a session expires, so saved DB connections keep working</li>
+          <li><strong>No bastion trivia.</strong> <code>aws rds connect &lt;db&gt;</code> hides the SSM
+            plumbing; same shape for caches and clusters</li>
+          <li><strong>The org at a glance.</strong> Repos, open PRs and running workflows across a
+            GitHub org in one list</li>
+          <li><strong>Deploys you can reason about.</strong> Every image tag is resolved back to the
+            pull request and CI run that produced it, so a rollback is a choice between changes, not
+            between hashes</li>
+          <li><strong>Guessable.</strong> Consistent <code>area verb</code> grammar with shell
+            completion over live resources; cross-platform binaries and a one-line install</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide" data-title="ourcli">
+    <h2>ourcli — how it works</h2>
+    <p class="sub">One binary in front of four systems that used to be visited separately.</p>
+    <div class="diagram">
+      <div class="lane">
+        <div class="lane-label">auth<em>once a morning</em></div>
+        <div class="chain">
+          <div class="node"><b>ourcli auth</b><i>one command</i></div><span class="arrow">→</span>
+          <div class="node"><b>SSO login</b><i>browser round trip</i></div><span class="arrow">→</span>
+          <div class="node"><b>Role discovery</b><i>what you can actually reach</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Tunnels restored</b><i>same ports as before expiry</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">aws<em>getting to things</em></div>
+        <div class="chain">
+          <div class="node"><b>rds · cache · eks</b><i>listed and picked by name</i></div><span class="arrow">→</span>
+          <div class="node"><b>SSM tunnel or kubeconfig</b><i>bastion plumbing hidden</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Stable local port</b><i>saved DB connections keep working</i></div><span class="arrow">→</span>
+          <div class="node"><b>disconnect</b><i>one command tidies up</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">gh<em>the org at a glance</em></div>
+        <div class="chain">
+          <div class="node"><b>ourcli gh</b><i>scoped to an org</i></div><span class="arrow">→</span>
+          <div class="node"><b>GitHub API</b><i>one call per area</i></div><span class="arrow">→</span>
+          <div class="node"><b>repos · prs · actions</b><i>one list instead of twenty tabs</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">deploy<em>the risky one</em></div>
+        <div class="chain">
+          <div class="node"><b>deploy tags</b><i>image tags for a service</i></div><span class="arrow">→</span>
+          <div class="node hi"><b>Resolved to PR + CI</b><i>what was actually in each tag</i></div><span class="arrow">→</span>
+          <div class="node"><b>Pick a change</b><i>not a hash</i></div><span class="arrow">→</span>
+          <div class="node"><b>rollback</b><i>writes the GitOps repo</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><b>One grammar:</b> <code>ourcli &lt;area&gt; &lt;verb&gt;</code>, with completion over live resources.</span>
+      <span><b>One install:</b> cross-platform binaries, no runtime to set up.</span>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="slide" data-title="ourcli">
+    <h2>ourcli — before and after</h2>
+    <p class="sub">Opening a tunnel to a dev database, then rolling back a service.</p>
+    <div class="cols">
+      <div>
+        <div class="label">Before</div>
+<pre><span class="c"># which account is dev? ask in chat, or check the wiki</span>
+<span class="p">$</span> <span class="b">aws sso login --profile dev-admin</span>
+
+<span class="c"># find the bastion instance id — another wiki page</span>
+<span class="p">$</span> <span class="b">aws ssm start-session --profile dev-admin \</span>
+<span class="b">    --region eu-west-1 \</span>
+<span class="b">    --target i-0a1b2c3d4e5f67890 \</span>
+<span class="b">    --document-name AWS-StartPortForwarding... \</span>
+<span class="b">    --parameters host=orders-db.xxxxx.rds.ama...,\</span>
+<span class="b">      portNumber=5432,localPortNumber=5433</span>
+
+<span class="e">An error occurred (TargetNotConnected)</span>
+
+<span class="c"># wrong account. repeat, and remember which local</span>
+<span class="c"># port you used. lose the tunnel when SSO expires.</span>
+
+<span class="c"># to roll back, open the GitOps repo, find the</span>
+<span class="c"># image tag, work out what was in it, edit YAML</span></pre>
+      </div>
+      <div>
+        <div class="label">After</div>
+<pre><span class="p">$</span> <span class="b">ourcli auth</span>
+<span class="k">✓</span> Authentication complete.
+<span class="k">✓</span> Reconnected orders-db on port 5433
+
+<span class="p">$</span> <span class="b">ourcli aws rds connect orders-db</span>
+<span class="k">✓</span> Tunnel started on port 5433 <span class="c">(same port, always)</span>
+
+<span class="p">$</span> <span class="b">ourcli deploy tags orders-service --env dev</span>
+TAG      PR     TITLE                     CI
+a3f91c2  #412   Retry failed payouts      <span class="k">passed</span>
+7b20e4d  #409   Bump shared client lib    <span class="k">passed</span>
+1c8ae30  #401   Add payout webhook        <span class="e">failed</span>
+
+<span class="p">$</span> <span class="b">ourcli deploy rollback orders-service --env dev</span>
+<span class="k">✓</span> Rolled back to 7b20e4d (#409)</pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 -->
   <section class="slide" data-title="Deployment tracker">
     <h2>Deployment tracker</h2>
     <p class="sub">Who is holding each shared frontend environment, right now.</p>
@@ -371,20 +654,57 @@
     </div>
   </section>
 
-  <!-- 8 -->
+  <!-- 12 -->
+  <section class="slide" data-title="Deployment tracker">
+    <h2>Deployment tracker — how it works</h2>
+    <p class="sub">Nothing is typed in. Every cell is derived from what GitHub already knows.</p>
+    <div class="diagram">
+      <div class="lane">
+        <div class="lane-label">Signals<em>read from GitHub</em></div>
+        <div class="chain">
+          <div class="node"><b>deploy:&lt;env&gt; label</b><i>who claimed the slot</i></div><span class="arrow">·</span>
+          <div class="node"><b>Deployment runs</b><i>did it actually finish</i></div><span class="arrow">·</span>
+          <div class="node"><b>PR state + branch</b><i>is the work still alive</i></div><span class="arrow">·</span>
+          <div class="node"><b>hold:&lt;env&gt; label</b><i>a deliberate reservation</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">Rules<em>applied per cell</em></div>
+        <div class="chain">
+          <div class="node hi"><b>Run succeeded → deployed</b><i>someone is on it</i></div><span class="arrow">·</span>
+          <div class="node hi"><b>Run failed or never finished</b><i>slot is unreliable</i></div><span class="arrow">·</span>
+          <div class="node hi"><b>PR merged or branch gone → free</b><i>stale claims clear themselves</i></div><span class="arrow">·</span>
+          <div class="node hi"><b>Untouched 7 days → idle</b><i>probably forgotten</i></div>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-label">Board<em>GitHub Pages</em></div>
+        <div class="chain">
+          <div class="node soft"><b>A repo × environment grid</b><i>four environments across every frontend repo, each cell showing the holder, the branch, how long they have had it, and whether the deploy worked — readable without signing in</i></div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><b>A label is a claim; a deployment run is a fact.</b> The board trusts the second one.</span>
+      <span><b>Sign-in is only needed to act</b> — reserving or deploying, never reading.</span>
+    </div>
+  </section>
+
+  <!-- 13 -->
   <section class="slide" data-title="Stack">
     <h2>Stack</h2>
     <p class="sub">What I used across these projects.</p>
     <table>
-      <tr><td class="k">Frontend</td><td>TypeScript, React 19, React Native, Expo, Vue 3, Nuxt 4, Tailwind, Zustand, Skia, Reanimated</td></tr>
-      <tr><td class="k">Backend &amp; data</td><td>PostgreSQL, Supabase, Row Level Security, PL/pgSQL, Deno edge functions, Go</td></tr>
-      <tr><td class="k">Auth &amp; payments</td><td>OAuth / PKCE, Apple Sign-In, Google Sign-In, StoreKit in-app purchases</td></tr>
-      <tr><td class="k">ML &amp; native</td><td>TensorFlow Lite, YOLO, Swift, Objective-C, Apple Vision, Foundation Models, Anthropic Claude</td></tr>
-      <tr><td class="k">Infra &amp; delivery</td><td>GitHub Actions, EAS Build, Cloudflare Pages, GitHub Pages, GoReleaser, AWS (SSO, RDS, EKS, SSM)</td></tr>
+      <tr><td class="k">Frontend</td><td>TypeScript, React 19, React Native, Expo, Vue 3, Nuxt 3 &amp; 4, Tailwind, Zustand, Skia, Reanimated</td></tr>
+      <tr><td class="k">Backend</td><td>NestJS, TypeORM, Deno edge functions, Go, REST APIs, Redis + Bull queues</td></tr>
+      <tr><td class="k">Data</td><td>PostgreSQL, Supabase, Row Level Security, PL/pgSQL, migrations, S3</td></tr>
+      <tr><td class="k">Auth &amp; payments</td><td>OAuth / PKCE, Google Sign-In, Apple Sign-In, Passport + JWT, StoreKit in-app purchases</td></tr>
+      <tr><td class="k">AI &amp; native</td><td>TensorFlow Lite, YOLO, OpenAI, Anthropic Claude, Replicate (Flux LoRA fine-tuning), Swift, Objective-C, Apple Vision, Foundation Models</td></tr>
+      <tr><td class="k">Infra &amp; delivery</td><td>Docker Compose, nginx, GitHub Actions, EAS Build, Cloudflare Pages, GitHub Pages, GoReleaser, AWS (SSO, RDS, EKS, SSM)</td></tr>
     </table>
   </section>
 
-  <!-- 9 -->
+  <!-- 14 -->
   <section class="slide center" data-title="">
     <h1>Thank you</h1>
     <p class="sub" style="font-size:clamp(15px,1.6vw,24px); margin-bottom:0">
