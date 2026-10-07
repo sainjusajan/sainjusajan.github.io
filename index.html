@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sajan Sainju — Projects</title>
+<meta name="description" content="Selected full-stack projects: VisualVocab, lendocli, deployment tracker.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #202124;
+    --muted: #5f6368;
+    --line: #dadce0;
+    --accent: #1a73e8;
+    --soft: #f1f3f4;
+    --sans: "Roboto", Arial, Helvetica, sans-serif;
+    --mono: ui-monospace, "Roboto Mono", Menlo, Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #e8eaed;
+    color: var(--fg);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  #deck {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    background: var(--bg);
+  }
+
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 7vh 8vw 10vh;
+    flex-direction: column;
+  }
+  .slide.active { display: flex; }
+  .slide.center { justify-content: center; }
+
+  h1 {
+    font-size: clamp(32px, 4.6vw, 64px);
+    line-height: 1.12;
+    margin: 0 0 2.4vh;
+    font-weight: 400;
+    letter-spacing: -.5px;
+  }
+
+  h2 {
+    font-size: clamp(24px, 3.1vw, 44px);
+    line-height: 1.15;
+    margin: 0 0 1vh;
+    font-weight: 400;
+    letter-spacing: -.3px;
+  }
+
+  .sub {
+    font-size: clamp(13px, 1.3vw, 19px);
+    color: var(--muted);
+    margin: 0 0 3.5vh;
+    font-weight: 400;
+  }
+
+  h3 {
+    font-size: clamp(13px, 1.25vw, 18px);
+    margin: 0 0 1.2vh;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  p, li { font-size: clamp(14px, 1.5vw, 22px); line-height: 1.55; }
+  p { margin: 0 0 1.6vh; }
+
+  ul { margin: 0 0 2vh; padding-left: 1.3em; }
+  li { margin-bottom: 1.3vh; }
+  li::marker { color: var(--muted); }
+  ul.tight li { margin-bottom: .8vh; }
+
+  strong { font-weight: 500; }
+  .muted { color: var(--muted); }
+  code { font-family: var(--mono); font-size: .88em; background: var(--soft); padding: 1px 5px; border-radius: 3px; }
+
+  .cols  { display: grid; grid-template-columns: 1fr 1fr; gap: 4vw; align-items: start; }
+  .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5vw; align-items: start; }
+  .lean  { grid-template-columns: 1.3fr 1fr; }
+  .lean-r{ grid-template-columns: 1fr 1.3fr; }
+
+  table { border-collapse: collapse; width: 100%; }
+  th, td {
+    text-align: left;
+    padding: 1.3vh .9vw;
+    font-size: clamp(12px, 1.3vw, 19px);
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th { font-weight: 500; color: var(--muted); font-size: clamp(11px, 1.1vw, 15px); }
+  td.k { font-weight: 500; white-space: nowrap; }
+  td { color: #3c4043; }
+
+  .shots { display: flex; gap: 1.4vw; align-items: flex-start; }
+  .shots img {
+    display: block;
+    width: clamp(100px, 11.5vw, 185px);
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .frame img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+  }
+  .cap { font-size: clamp(10px, 1vw, 13px); color: var(--muted); margin-top: 1vh; }
+
+  .tag {
+    display: inline-block;
+    font-size: clamp(10px, 1vw, 13px);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 8px;
+    margin: 0 6px 6px 0;
+  }
+
+  .meta {
+    font-size: clamp(13px, 1.3vw, 19px);
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .note {
+    border-left: 3px solid var(--accent);
+    padding-left: 1.1vw;
+    font-size: clamp(13px, 1.35vw, 19px);
+    color: var(--muted);
+    margin-top: 1vh;
+  }
+
+  #chrome {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    padding: 2.2vh 8vw;
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(10px, 1vw, 13px);
+    color: #9aa0a6;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  @media (max-width: 760px) {
+    .slide { padding: 5vh 7vw 10vh; }
+    .cols, .cols3, .lean, .lean-r { grid-template-columns: 1fr; gap: 3vh; }
+    .shots img { width: 28vw; }
+    p, li { font-size: 15px; }
+    #hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="deck">
+
+  <!-- 1 -->
+  <section class="slide center" data-title="">
+    <h1>Selected projects</h1>
+    <p class="sub" style="font-size:clamp(15px,1.6vw,24px); margin-bottom:0">
+      Sajan Sainju &nbsp;·&nbsp; Full-stack developer<br>
+      <span style="font-size:.85em">github.com/sainjusajan</span>
+    </p>
+  </section>
+
+  <!-- 2 -->
+  <section class="slide" data-title="Overview">
+    <h2>Overview</h2>
+    <p class="sub">Three projects, different scales.</p>
+    <table>
+      <tr>
+        <th>Project</th><th>What it is</th><th>Role</th><th>Stack</th>
+      </tr>
+      <tr>
+        <td class="k">VisualVocab</td>
+        <td>iOS app — point your camera at an object, learn its name in 11 languages</td>
+        <td>Solo, end to end</td>
+        <td>React Native, TypeScript, Swift, Supabase, Nuxt</td>
+      </tr>
+      <tr>
+        <td class="k">lendocli</td>
+        <td>CLI for AWS, GitHub Enterprise and deploys</td>
+        <td>Contributor (team tool)</td>
+        <td>Go, AWS SDK, GoReleaser</td>
+      </tr>
+      <tr>
+        <td class="k">Deployment tracker</td>
+        <td>Board showing who holds each shared frontend environment</td>
+        <td>Solo, internal</td>
+        <td>GitHub API, GitHub Pages, OAuth</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- 3 -->
+  <section class="slide" data-title="VisualVocab">
+    <h2>VisualVocab</h2>
+    <p class="sub">iOS language-learning app. Point, tap, and learn.</p>
+    <div class="cols lean-r">
+      <div>
+        <ul>
+          <li>Camera detects objects in real time and labels them in your target language</li>
+          <li>Tap or draw a box on anything for a precise AI identification</li>
+          <li>Every word found is saved to a personal vocabulary list</li>
+          <li>11 languages, light and dark themes, guest mode</li>
+          <li>In-app purchases for cloud identification credits</li>
+        </ul>
+        <div style="margin-top:1vh">
+          <span class="tag">React Native + Expo</span><span class="tag">TypeScript</span>
+          <span class="tag">Swift</span><span class="tag">Supabase</span>
+          <span class="tag">PostgreSQL</span><span class="tag">Nuxt + Tailwind</span>
+        </div>
+      </div>
+      <div>
+        <div class="shots">
+          <img src="assets/vv-home.png" alt="Home screen">
+          <img src="assets/vv-camera.png" alt="Live camera detection">
+          <img src="assets/vv-settings.png" alt="Settings">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 -->
+  <section class="slide" data-title="VisualVocab">
+    <h2>VisualVocab — how it works</h2>
+    <p class="sub">Three ways to identify an object, each a different trade-off.</p>
+    <div class="cols3">
+      <div>
+        <h3>On-device (default)</h3>
+        <ul class="tight">
+          <li>YOLOv26n running in TensorFlow Lite, 3.25 MB</li>
+          <li>15–24 fps, 20–40 ms per frame</li>
+          <li>Free, works offline, 80 object classes</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Cloud</h3>
+        <ul class="tight">
+          <li>Claude Haiku vision model via a Supabase edge function</li>
+          <li>Recognises anything, not just 80 classes</li>
+          <li>1–3 s, costs credits</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Apple Intelligence</h3>
+        <ul class="tight">
+          <li>Apple Vision + on-device Foundation Models</li>
+          <li>Custom Swift / Objective-C bridge</li>
+          <li>Free and fully private, iOS 26+</li>
+        </ul>
+      </div>
+    </div>
+    <h3 style="margin-top:2.5vh">Notable engineering</h3>
+    <ul class="tight">
+      <li>Inference runs on a worklet thread and boxes render on a Skia canvas, so the UI holds 60 fps</li>
+      <li>Credits are debited by a single locking Postgres stored procedure — no double-spending</li>
+      <li>Row Level Security on every table; IAP receipts verified server-side and deduplicated</li>
+    </ul>
+  </section>
+
+  <!-- 5 -->
+  <section class="slide" data-title="VisualVocab">
+    <h2>VisualVocab — shipping it</h2>
+    <p class="sub">Everything from the model to the App Store listing.</p>
+    <div class="cols">
+      <div>
+        <h3>What I built</h3>
+        <ul class="tight">
+          <li>The app: 60 TypeScript files, ~7.9k lines</li>
+          <li>Backend: Postgres schema, 3 edge functions, auth, payments</li>
+          <li>Native: Swift bridge for Apple Intelligence</li>
+          <li>Design system: palette, type scale, 8 components</li>
+          <li>Landing site in Nuxt 4 on Cloudflare Pages</li>
+          <li>Privacy policy, terms and support pages</li>
+          <li>CI with GitHub Actions and EAS Build</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Business model</h3>
+        <ul class="tight">
+          <li>Guest mode works with no account at all</li>
+          <li>10 free credits on signup</li>
+          <li>Credit packs at $0.99 / $3.99 / $9.99</li>
+          <li>Only the cloud path costs anything to serve, so the free modes stay free</li>
+        </ul>
+        <div class="note">Pushing inference on-device is what makes the free tier sustainable — the
+          architecture and the business model were the same decision.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section class="slide" data-title="lendocli">
+    <h2>lendocli</h2>
+    <p class="sub">Go CLI for AWS, GitHub Enterprise and deploys. A team tool — a colleague built the core.</p>
+    <div class="cols lean">
+      <div>
+        <h3>What the tool does</h3>
+        <ul class="tight">
+          <li>One command for the whole Okta → AWS SSO login flow</li>
+          <li>Database and cache tunnels on stable local ports, restored after a session expires</li>
+          <li>Repos, open PRs and running workflows across a GitHub org</li>
+          <li>Deploy tags, rollback and release</li>
+        </ul>
+        <h3 style="margin-top:2.5vh">My contribution — 4 commits, ~1.1k lines of Go</h3>
+        <ul class="tight">
+          <li><strong>PR and CI columns on image tags.</strong> Rollback meant picking between opaque
+            tags. I resolved each tag back to the pull request and CI run that produced it, so you
+            choose a change rather than a hash.</li>
+          <li><strong>Per-account SSO role discovery.</strong> The tool assumed everyone had admin in
+            every account and failed for anyone with scoped permissions. Replaced the assumption with
+            real discovery.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Why it mattered</h3>
+        <p class="muted" style="font-size:clamp(13px,1.35vw,19px)">Connecting to a dev database used to
+          take six manual steps across the AWS console, the CLI and two wiki pages — and usually failed
+          the first time on the wrong account.</p>
+        <div class="note">Go was new to me. Working inside someone else's codebase, matching their
+          conventions, is a different skill from building solo.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 -->
+  <section class="slide" data-title="Deployment tracker">
+    <h2>Deployment tracker</h2>
+    <p class="sub">Who is holding each shared frontend environment, right now.</p>
+    <div class="cols lean-r">
+      <div>
+        <h3>The problem</h3>
+        <p class="muted" style="font-size:clamp(13px,1.35vw,19px); margin-bottom:2vh">Four shared
+          environments, several repos, everyone's branch wants one. The question got asked in chat
+          several times a day — and people deployed over each other's work.</p>
+        <h3>The approach</h3>
+        <ul class="tight">
+          <li>A repo × environment grid, computed from GitHub labels, deploy runs, PR state and branches
+            — not from what anyone claimed</li>
+          <li>Statuses: deployed, deploying, failed, never finished, idle &gt;7 days, free to take</li>
+          <li>Merged PR means the slot frees itself automatically</li>
+          <li>A <code>hold:&lt;env&gt;</code> label reserves a slot when someone does know better</li>
+          <li>Reading needs no sign-in; hosted on GitHub Pages behind GitHub auth</li>
+        </ul>
+      </div>
+      <div class="frame">
+        <img src="assets/deployment-tracker.jpeg" alt="Deployment tracker board">
+        <div class="cap">Names and avatars redacted</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 -->
+  <section class="slide" data-title="Stack">
+    <h2>Stack</h2>
+    <p class="sub">What I used across these projects.</p>
+    <table>
+      <tr><td class="k">Frontend</td><td>TypeScript, React 19, React Native, Expo, Vue 3, Nuxt 4, Tailwind, Zustand, Skia, Reanimated</td></tr>
+      <tr><td class="k">Backend &amp; data</td><td>PostgreSQL, Supabase, Row Level Security, PL/pgSQL, Deno edge functions, Go</td></tr>
+      <tr><td class="k">Auth &amp; payments</td><td>OAuth / PKCE, Apple Sign-In, Google Sign-In, StoreKit in-app purchases</td></tr>
+      <tr><td class="k">ML &amp; native</td><td>TensorFlow Lite, YOLO, Swift, Objective-C, Apple Vision, Foundation Models, Anthropic Claude</td></tr>
+      <tr><td class="k">Infra &amp; delivery</td><td>GitHub Actions, EAS Build, Cloudflare Pages, GitHub Pages, GoReleaser, AWS (SSO, RDS, EKS, SSM)</td></tr>
+    </table>
+  </section>
+
+  <!-- 9 -->
+  <section class="slide center" data-title="">
+    <h1>Thank you</h1>
+    <p class="sub" style="font-size:clamp(15px,1.6vw,24px); margin-bottom:0">
+      Happy to go deeper on any of it.<br>
+      <span style="font-size:.85em">Sajan Sainju &nbsp;·&nbsp; github.com/sainjusajan</span>
+    </p>
+  </section>
+
+</div>
+
+<div id="chrome">
+  <span id="stitle"></span>
+  <span id="hint">← →  navigate · F  fullscreen</span>
+  <span id="count"></span>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const count = document.getElementById('count');
+  const stitle = document.getElementById('stitle');
+  let i = 0;
+
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, k) => s.classList.toggle('active', k === i));
+    count.textContent = (i + 1) + ' / ' + slides.length;
+    stitle.textContent = slides[i].dataset.title || '';
+    if (history.replaceState) history.replaceState(null, '', '#' + (i + 1));
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case ' ': case 'PageDown':
+        e.preventDefault(); show(i + 1); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+        e.preventDefault(); show(i - 1); break;
+      case 'Home': e.preventDefault(); show(0); break;
+      case 'End': e.preventDefault(); show(slides.length - 1); break;
+      case 'f': case 'F':
+        if (document.fullscreenElement) document.exitFullscreen();
+        else document.documentElement.requestFullscreen();
+        break;
+    }
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('a')) return;
+    show(e.clientX < window.innerWidth * 0.25 ? i - 1 : i + 1);
+  });
+
+  let x0 = null;
+  document.addEventListener('touchstart', e => { x0 = e.changedTouches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 48) show(dx < 0 ? i + 1 : i - 1);
+    x0 = null;
+  }, { passive: true });
+
+  const start = parseInt(location.hash.slice(1), 10);
+  show(Number.isFinite(start) && start > 0 ? start - 1 : 0);
+</script>
+
+</body>
+</html>
